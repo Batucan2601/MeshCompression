@@ -1,0 +1,9 @@
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/corto.dir
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/cortocodec_unity.dir
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/cortoexe.dir
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/edit_cache.dir
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/rebuild_cache.dir
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/list_install_components.dir
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/install.dir
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/install/local.dir
+/home/batu/Desktop/MeshCompression/CENG513/implementations/corto-master/corto-master/build/CMakeFiles/install/strip.dir
