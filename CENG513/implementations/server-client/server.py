@@ -1,14 +1,18 @@
 # echo-server.py
 
 
+from concurrent.futures import thread
 import socket
 from multiprocessing import Process
+from multiprocessing import Pool
 import subprocess
 import os
 from time import sleep 
 import time
 import datetime
-import sys 
+import sys
+from tracemalloc import start 
+import numpy as np 
 
 
 file_name =  sys.argv[1] 
@@ -22,41 +26,42 @@ BLUETOOTH_PORT = 4
 
 no_of_ports =  sys.argv[5]
 
+def thread_data_send(socket , datas , index  ):
+    sockets[index].listen()
+    conn, addr = sockets[index].accept()
+    with conn:
+        data_size =  int( len( datas )    / int(no_of_ports) ) 
+        start_index = data_size * index
+        end_index = data_size * (index + 1 )
+        index_ = start_index
+        for i in range( start_index , end_index , DATA_READ_SIZE ):
+            conn.send( datas[i : i + DATA_READ_SIZE])
+            index_ += DATA_READ_SIZE
+        #one last time 
+        conn.send( datas[index_ : end_index ])
+    sockets[index].close()
 
-# open process
-if( sending_options == "wifi"):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((HOST, PORT))
-        s.listen()
-        conn, addr = s.accept()
-        with conn:
-            print(f"Connected by {addr}")
+if __name__ == '__main__':
+    # open process
+        #create n sockets
+        sockets = []
+        for i in range(int(no_of_ports)):
+            if( sending_options == "wifi"):
+                sockets.append( socket.socket(socket.AF_INET, socket.SOCK_STREAM)  )
+                sockets[i].setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                sockets[i].bind((HOST , PORT + i))
+            elif( sending_options == "bluetooth"):
+                sockets.append( socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM , socket.BTPROTO_RFCOMM)  )
+                sockets[i].setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                sockets[i].bind((COMP_MAC_ADDRESS , BLUETOOTH_PORT + i ))
+        #read all of the data and partition it to ports equally
+        datas = [] 
+        for i in range( int(sending_no) ):
             file = open( file_name , "rb")
-            for i in range( int(sending_no) ):
-                while True:
-                    data = file.read(DATA_READ_SIZE)
-                    if data:
-                        # 1- send data
-                        conn.send( data )
-                    else:
-                        break
-        s.close()
-elif( sending_options == "bluetooth"):
-    with socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM , socket.BTPROTO_RFCOMM) as s:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((COMP_MAC_ADDRESS , BLUETOOTH_PORT ))
-        s.listen()
-        conn, addr = s.accept()
-        with conn:
-            print(f"Connected by {addr}")
-            file = open( file_name , "rb")
-            for i in range( int(sending_no) ):
-                while True:
-                    data = file.read(DATA_READ_SIZE)
-                    if data:
-                        # 1- send data
-                        conn.send( data )
-                    else:
-                        break
-        s.close()
+            datas.append(file.read())
+            file.close()
+        datas = np.array(datas).flatten()
+        #now partition them to ports
+        for i in range( int(no_of_ports) ):
+            p = Process(target=thread_data_send, args=(  sockets , datas , i ) ) 
+            p.start()
