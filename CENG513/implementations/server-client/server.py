@@ -17,7 +17,7 @@ import numpy as np
 
 file_name =  sys.argv[1] 
 sending_no = sys.argv[2] #number of times 
-HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
+HOST = "192.168.0.28"  # Standard loopback interface address (localhost)
 PORT = int(sys.argv[3]) # Port to listen on (non-privileged ports are > 1023)
 sending_options =  sys.argv[4]
 COMP_MAC_ADDRESS = "38:BA:F8:E0:83:54"
@@ -25,6 +25,7 @@ DATA_READ_SIZE = 1024
 BLUETOOTH_PORT = 4 
 
 no_of_ports =  sys.argv[5]
+print( "host = " + HOST , " port" + str(PORT) + "no of ports "  + str(no_of_ports) )
 
 def thread_data_send(socket , datas , index  ):
     sockets[index].listen()

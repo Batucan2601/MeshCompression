@@ -27,7 +27,7 @@ while(True):
     #select 3'rd one because 3'rd integer always ms passed 
     
     ms_passed = integers[0]
-    ms_passed_decoding = integers[-1]
+    ms_passed_decoding = integers[-2]
 
     f.write( ms_passed + " " + ms_passed_decoding + "\n" )
     end_time  = time.time()*1000.0
