@@ -23,10 +23,13 @@ while(True):
     proc.wait()
     #total ms passed 
     integers =  re.findall(r'\d+', str(stdout))
+    print(integers)
     #select 3'rd one because 3'rd integer always ms passed 
     
     ms_passed = integers[0]
-    f.write( ms_passed + "\n" )
+    ms_passed_decoding = integers[-1]
+
+    f.write( ms_passed + " " + ms_passed_decoding + "\n" )
     end_time  = time.time()*1000.0
     if( end_time - start_time > int(sys.argv[2]) ):
         break
