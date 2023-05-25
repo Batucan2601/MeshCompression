@@ -22,21 +22,26 @@ PORT = int(sys.argv[3]) # Port to listen on (non-privileged ports are > 1023)
 sending_options =  sys.argv[4]
 COMP_MAC_ADDRESS = "38:BA:F8:E0:83:54"
 DATA_READ_SIZE = 1024 
-BLUETOOTH_PORT = 4 
+BLUETOOTH_PORT = 1
 
 no_of_ports =  sys.argv[5]
 print( "host = " + HOST , " port" + str(PORT) + "no of ports "  + str(no_of_ports) )
 
 def thread_data_send(socket , datas , index  ):
+    print("inside func")
     sockets[index].listen()
+    print("after listen")
     conn, addr = sockets[index].accept()
+    print("after accept")
     with conn:
-        data_size =  int( len( datas )    / int(no_of_ports) ) 
+        data_size =  int( len( datas[0] )    / int(no_of_ports) ) 
         start_index = data_size * index
         end_index = data_size * (index + 1 )
         index_ = start_index
         for i in range( start_index , end_index , DATA_READ_SIZE ):
-            conn.send( datas[i : i + DATA_READ_SIZE])
+            for j in range( int(sending_no) ):
+                #print( "send " , i , j )  
+                conn.send( datas[0][i : i + DATA_READ_SIZE])
             index_ += DATA_READ_SIZE
         #one last time 
         conn.send( datas[index_ : end_index ])
@@ -57,10 +62,9 @@ if __name__ == '__main__':
                 sockets[i].bind((COMP_MAC_ADDRESS , BLUETOOTH_PORT + i ))
         #read all of the data and partition it to ports equally
         datas = [] 
-        for i in range( int(sending_no) ):
-            file = open( file_name , "rb")
-            datas.append(file.read())
-            file.close()
+        file = open( file_name , "rb")
+        datas.append(file.read())
+        file.close()
         datas = np.array(datas).flatten()
         #now partition them to ports
         for i in range( int(no_of_ports) ):

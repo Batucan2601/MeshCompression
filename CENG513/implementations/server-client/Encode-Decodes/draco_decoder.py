@@ -6,11 +6,14 @@ import re
 import datetime
 import sys
 
+number_of_times = sys.argv[2]
 
-f = open("LOGS/draco_decoder_log", "w")
+dir_name  = sys.argv[3]
+
+f = open(dir_name +"/draco_decoder_log", "w")
 time_before_encoding = datetime.datetime.now()
 f.write("before decoding : " + str(time_before_encoding.hour) + " " +  str(time_before_encoding.minute)+ " " + str(time_before_encoding.second) + " " + str(str(time_before_encoding.microsecond)[:2]) + "\n"  )
-start_time = time.time() * 1000 
+counter = 0
 while(True):
     #write time before encoding
 
@@ -25,6 +28,7 @@ while(True):
     ms_passed = integers[0]
     f.write( ms_passed + "\n" )
     end_time = time.time() * 1000 
-    if( end_time - start_time > int(sys.argv[2]) ):
+    if( counter == int(number_of_times)  ):
         break
+    counter += 1 
 
